@@ -42,6 +42,7 @@
 /******************************************************************************/
 
 #include <stdlib.h>
+#include <errno.h>
 #include <altera_avalon_spi_regs.h>
 #include "gpio.h"
 #include "gpio_extra.h"
@@ -89,6 +90,23 @@ int32_t gpio_get(struct gpio_desc **desc,
 	*desc = descriptor;
 
 	return SUCCESS;
+}
+
+/**
+ * @brief Get the value of an optional GPIO.
+ * @param desc - The GPIO descriptor.
+ * @param param - GPIO Initialization parameters.
+ * @return SUCCESS in case of success, FAILURE otherwise.
+ */
+int32_t gpio_get_optional(struct gpio_desc **desc,
+			  const struct gpio_init_param *param)
+{
+	if(param == NULL){
+		*desc = NULL;
+		return SUCCESS;
+	}
+
+	return gpio_get(desc, param);
 }
 
 /**
