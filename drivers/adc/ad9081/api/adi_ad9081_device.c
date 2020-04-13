@@ -153,8 +153,8 @@ int32_t adi_ad9081_device_boot_post_clock(adi_ad9081_device_t *device)
 	err = adi_ad9081_hal_bf_set(device, REG_UP_CTRL_ADDR,
 				    BF_UP_SPI_EDGE_INTERRUPT_INFO, 0x1);
 	AD9081_ERROR_RETURN(err);
-	if (err = adi_ad9081_hal_bf_wait_to_clear(
-		    device, REG_UP_CTRL_ADDR, BF_UP_SPI_EDGE_INTERRUPT_INFO),
+	if (err = adi_ad9081_hal_bf_wait_to_clear(device, REG_UP_CTRL_ADDR,
+						  BF_UP_SPI_EDGE_INTERRUPT_INFO),
 	    err != API_CMS_ERROR_OK)
 		AD9081_LOG_ERR("up_spi_edge_interrupt bit never cleared");
 
@@ -643,7 +643,8 @@ int32_t adi_ad9081_device_hw_open(adi_ad9081_device_t *device)
 {
 	int32_t err;
 	AD9081_NULL_POINTER_RETURN(device);
-	if (err = adi_ad9081_hal_hw_open(device), err != API_CMS_ERROR_OK) {
+	err = adi_ad9081_hal_hw_open(device);
+	if (err != API_CMS_ERROR_OK) {
 		return err;
 	}
 	AD9081_LOG_FUNC();
