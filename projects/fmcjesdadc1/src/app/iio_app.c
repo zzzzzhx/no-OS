@@ -1,10 +1,11 @@
 /***************************************************************************//**
- *   @file   projects/fmcjesdadc1/src/app/app_config.h
- *   @brief  Config file for FMCJESDADC1 project.
- *   @author DBogdan (dragos.bogdan@analog.com)
- *   @author Antoniu Miclaus (antoniu.miclaus@analog.com)
+ *   @file   iio_app.c
+ *   @brief  Implementation of iio_app.
+ *   This application instantiates iio_axi_adc and iio_axi_dac devices, for
+ *   reading/writing and parameterization.
+ *   @author Cristian Pop (cristian.pop@analog.com)
 ********************************************************************************
- * Copyright 2020(c) Analog Devices, Inc.
+ * Copyright 2019(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -38,11 +39,75 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef APP_CONFIG_H_
-#define APP_CONFIG_H_
+/******************************************************************************/
+/***************************** Include Files **********************************/
+/******************************************************************************/
 
-//#define XILINX_PLATFORM
+#include "error.h"
+#include "iio.h"
+#include "iio_app.h"
 
-#define IIO_SUPPORT
+/**
+ * @brief Application parameterization.
+ * @param desc - Application descriptor.
+ * @param param - Application initial configuration structure.
+ * @return SUCCESS in case of success, FAILURE otherwise.
+ */
+int32_t iio_app_init(struct iio_app_desc **desc,
+		     struct iio_app_init_param *param)
+{
+	struct tinyiiod *iiod;
+	int32_t status;
 
-#endif /* APP_CONFIG_H_ */
+	if (!param)
+		return FAILURE;
+
+	status = iio_init(&iiod, param->iio_server_ops);
+	if(status < 0)
+		return status;
+
+	*desc = calloc(1, sizeof(struct iio_app_desc));
+	if (!(*desc))
+		return FAILURE;
+
+	(*desc)->iiod = iiod;
+
+	return SUCCESS;
+}
+
+/**
+ * @brief Release resources.
+ * @param desc - Application descriptor.
+ * @return SUCCESS in case of success, FAILURE otherwise.
+ */
+int32_t iio_app_remove(struct iio_app_desc *desc)
+{
+	int32_t status;
+
+	if (!desc)
+		return FAILURE;
+
+	status = iio_remove(desc->iiod);
+	if(status < 0)
+		return status;
+
+	free(desc);
+
+	return SUCCESS;
+}
+
+/**
+ * @brief iio application, reads commands and executes them.
+ * @param desc - Application descriptor.
+ * @return: SUCCESS in case of success, FAILURE otherwise.
+ */
+int32_t iio_app(struct iio_app_desc *desc)
+{
+	int32_t status;
+
+	while(1) {
+		status = tinyiiod_read_command(desc->iiod);
+		if(status < 0)
+			return status;
+	}
+}

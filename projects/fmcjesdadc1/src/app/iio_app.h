@@ -1,10 +1,9 @@
 /***************************************************************************//**
- *   @file   projects/fmcjesdadc1/src/app/app_config.h
- *   @brief  Config file for FMCJESDADC1 project.
- *   @author DBogdan (dragos.bogdan@analog.com)
- *   @author Antoniu Miclaus (antoniu.miclaus@analog.com)
+ *   @file   iio_app.h
+ *   @brief  Header file of iio_app.
+ *   @author Cristian Pop (cristian.pop@analog.com)
 ********************************************************************************
- * Copyright 2020(c) Analog Devices, Inc.
+ * Copyright 2019(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -38,11 +37,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef APP_CONFIG_H_
-#define APP_CONFIG_H_
+#ifndef IIO_APP_H_
+#define IIO_APP_H_
 
-//#define XILINX_PLATFORM
+/******************************************************************************/
+/***************************** Include Files **********************************/
+/******************************************************************************/
 
-#define IIO_SUPPORT
+#include "iio_types.h"
 
-#endif /* APP_CONFIG_H_ */
+/******************************************************************************/
+/*************************** Types Declarations *******************************/
+/******************************************************************************/
+
+/**
+ * @struct iio_app_desc
+ * @brief Application desciptor.
+ */
+struct iio_app_desc {
+	/** read./write function callbacks */
+	struct iio_server_ops *iio_server_ops;
+	/** iiod handle */
+	struct tinyiiod *iiod;
+};
+
+/**
+ * @struct iio_app_init_param
+ * @brief Application initial configuration.
+ */
+struct iio_app_init_param {
+	/** read./write function callbacks */
+	struct iio_server_ops *iio_server_ops;
+};
+
+/******************************************************************************/
+/************************ Functions Declarations ******************************/
+/******************************************************************************/
+
+/* Init application. */
+int32_t iio_app_init(struct iio_app_desc **desc,
+		     struct iio_app_init_param *param);
+/* Free the resources allocated by iio_app_init(). */
+int32_t iio_app_remove(struct iio_app_desc *desc);
+/* Basic iio application loop. */
+int32_t iio_app(struct iio_app_desc *desc);
+
+#endif // IIO_APP_H_
