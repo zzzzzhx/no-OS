@@ -44,6 +44,9 @@
 /******************************************************************************/
 #include <xparameters.h>
 
+#define UART_DEVICE_ID				XPAR_PS7_UART_1_DEVICE_ID
+#define INTC_DEVICE_ID				XPAR_PS7_SCUGIC_0_DEVICE_ID
+
 #define SPI_DEVICE_ID				XPAR_PS7_SPI_0_DEVICE_ID
 #ifdef PLATFORM_ZYNQMP
 #define GPIO_DEVICE_ID				XPAR_PSU_GPIO_0_DEVICE_ID
