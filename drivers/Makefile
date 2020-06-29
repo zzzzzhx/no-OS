@@ -10,7 +10,9 @@ INCLUDES = -I../include/ \
 	 -I./adc/ad9208/ad9208_api \
 	 -I./adc/ad9081/api \
 	 -I./axi_core/axi_adc_core \
-	 -I../projects/adrv9009/src/devices/adi_hal
+	 -I../projects/adrv9009/src/devices/adi_hal \
+	 -I./axi_core/spi_engine \
+	 -I./platform/xilinx
 
 CFLAGS = -c -Wall -Wformat=0 $(INCLUDES)
 
