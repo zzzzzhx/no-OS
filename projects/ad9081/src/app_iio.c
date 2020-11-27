@@ -56,6 +56,11 @@
 /************************** Functions Implementation **************************/
 /******************************************************************************/
 
+static struct iio_data_buffer g_write_buff = {
+	.buff = (void *)DAC_DDR_BASEADDR,
+	.size = 0xFFFFFFFF,
+};
+
 /**
  * @brief Application IIO setup.
  * @return SUCCESS in case of success, FAILURE otherwise.
@@ -106,7 +111,7 @@ int32_t iio_server_init(struct iio_axi_adc_init_param *adc_init,
 		return status;
 	iio_axi_dac_get_dev_descriptor(iio_axi_dac_desc, &dac_dev_desc);
 	status = iio_register(iio_app_desc, dac_dev_desc, "axi_dac",
-			      iio_axi_dac_desc, NULL, NULL);
+			      iio_axi_dac_desc, NULL, &g_write_buff);
 	if (status < 0)
 		return status;
 

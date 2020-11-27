@@ -45,6 +45,16 @@
 #include "irq.h"
 #include "irq_extra.h"
 
+static struct iio_data_buffer g_write_buff1 = {
+	.buff = (void *)DAC1_DDR_BASEADDR,
+	.size = 0xFFFFFFFF,
+};
+
+static struct iio_data_buffer g_write_buff2 = {
+	.buff = (void *)DAC2_DDR_BASEADDR,
+	.size = 0xFFFFFFFF,
+};
+
 /**
  * @brief Application IIO setup.
  * @return SUCCESS in case of success, FAILURE otherwise.
@@ -117,7 +127,7 @@ int32_t iio_server_init(struct iio_axi_adc_init_param *adc1_init,
 		return status;
 	iio_axi_adc_get_dev_descriptor(iio_axi_adc_desc, &iio_dev_desc);
 	status = iio_register(iio_desc, iio_dev_desc, "axi_adc2",
-			      iio_axi_adc_desc, NULL, NULL);
+			      iio_axi_adc_desc, NULL, &g_write_buff1);
 	if (status < 0)
 		return status;
 
@@ -126,7 +136,7 @@ int32_t iio_server_init(struct iio_axi_adc_init_param *adc1_init,
 		return status;
 	iio_axi_dac_get_dev_descriptor(iio_axi_dac_desc, &iio_dev_desc);
 	status = iio_register(iio_desc, iio_dev_desc, "axi_dac2",
-			      iio_axi_dac_desc, NULL, NULL);
+			      iio_axi_dac_desc, NULL, &g_write_buff2);
 	if (status < 0)
 		return status;
 
